@@ -74,7 +74,7 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
 
   return (
     <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl max-h-[95vh] overflow-hidden bg-[#f9f5e7]/65 border-2 border-primary/10 shadow-2xl">
+      <div className="w-full max-w-4xl max-h-[95vh] overflow-hidden bg-[#f9f5e7]/65 border border-primary/10 shadow-2xl rounded-3xl">
         <div className="bg-gradient-warm p-6 text-white relative overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="relative z-10">
@@ -174,7 +174,6 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
             </div>
           )}
 
-          {/* Step 2: Details */}
           {currentStep === 2 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <div className="text-center mb-8">
@@ -232,7 +231,7 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-base font-medium">Cuisine Specialties</label>
+                  <label className="text-base font-medium">Specialties</label>
                   <div className="flex gap-2">
                     <input
                       value={cuisineinput}
@@ -262,20 +261,19 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
                 </div>
 
                 <div className="space-y-2 fle flex-row justify-start item-start">
-                  <label className="font-medium">Description</label>
+                  <label className="font-medium flex justify-start items-start">Description</label>
                   <textarea
                     placeholder="Describe the atmosphere, signature dishes, what makes this spot unique..."
                     value={formData.description}
                     onChange={(e: any) => updateFormData("description", e.target.value)}
                     rows={4}
-                    className="text-base bg-white/65"
+                    className="text-base bg-white/65 w-80 h-72 mb-3"
                   />
                 </div>
               </div>
             </div>
           )}
 
-          {/* Step 3: Photos */}
           {currentStep === 3 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <div className="text-center mb-8">
@@ -287,51 +285,20 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
               </div>
 
               <div className="grid gap-6">
-                <div className="border-2 border-dashed border-primary/20 rounded-xl p-12 text-center bg-gradient-to-br from-primary/5 to-transparent hover:from-primary/10 transition-colors">
+                <div className="relative border-2 border-dashed border-primary/20 rounded-xl p-12 text-center bg-gradient-to-br from-primary/5 to-transparent hover:from-primary/10 transition-colors">
+                  <input type="file" className="absolute top-0 bottom-0 right-0 left-0 opacity-0 cursor-pointer" />
                   <div className="w-20 h-20 bg-gradient-warm rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Upload className="w-10 h-10 text-white" />
+                    <Upload className="w-10 h-10" />
                   </div>
                   <h4 className="text-xl font-semibold mb-2">Upload Photos</h4>
                   <p className="text-muted-foreground mb-6">
                     Add photos of the food, interior, exterior, and menu
                   </p>
-                  <button className="bg-gradient-warm hover:opacity-90">
-                    <Camera className="w-4 h-4 mr-2" />
-                    Choose Photos
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="aspect-square rounded-lg bg-muted flex items-center justify-center border-2 border-dashed border-muted-foreground/25">
-                    <div className="text-center">
-                      <Camera className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-xs text-muted-foreground">Food</p>
-                    </div>
-                  </div>
-                  <div className="aspect-square rounded-lg bg-muted flex items-center justify-center border-2 border-dashed border-muted-foreground/25">
-                    <div className="text-center">
-                      <Camera className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-xs text-muted-foreground">Interior</p>
-                    </div>
-                  </div>
-                  <div className="aspect-square rounded-lg bg-muted flex items-center justify-center border-2 border-dashed border-muted-foreground/25">
-                    <div className="text-center">
-                      <Camera className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-xs text-muted-foreground">Exterior</p>
-                    </div>
-                  </div>
-                  <div className="aspect-square rounded-lg bg-muted flex items-center justify-center border-2 border-dashed border-muted-foreground/25">
-                    <div className="text-center">
-                      <Camera className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-xs text-muted-foreground">Menu</p>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Step 4: Review */}
           {currentStep === 4 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <div className="text-center mb-8">
@@ -390,38 +357,40 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
               </div>
             </div>
           )}
-        </div>
 
-        {/* Footer */}
-        <div className="border-t bg-muted/30 p-6">
-          <div className="flex justify-between">
-            <button
-              onClick={prevStep}
-              disabled={currentStep === 1}
-              className="flex items-center gap-2 cursor-pointer"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Previous
-            </button>
 
-            {currentStep < 4 ? (
-              <button
-                onClick={nextStep}
-                className="flex items-center gap-2 bg-gradient-warm hover:opacity-90 cursor-pointer"
-              >
-                Next
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            ) : (
-              <button
-                onClick={handleSubmit}
-                className="flex items-center gap-2 bg-gradient-warm hover:opacity-90"
-              >
-                <Check className="w-4 h-4" />
-                Submit Spot
-              </button>
-            )}
-          </div>
+
+            <div className="border-t bg-muted/30 p-6 pb-2 mt-10">
+              <div className="flex justify-between">
+                <button
+                  onClick={prevStep}
+                  disabled={currentStep === 1}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Previous
+                </button>
+
+                {currentStep < 4 ? (
+                  <button
+                    onClick={nextStep}
+                    className="flex items-center gap-2 bg-gradient-warm hover:opacity-90 cursor-pointer"
+                  >
+                    Next
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSubmit}
+                    className="flex items-center gap-2 bg-gradient-warm hover:opacity-90"
+                  >
+                    <Check className="w-4 h-4" />
+                    Submit Spot
+                  </button>
+                )}
+              </div>
+            </div>
+
         </div>
       </div>
     </div>
