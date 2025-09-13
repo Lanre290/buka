@@ -70,8 +70,8 @@ const locations = [
 
 const Map = () => {
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<Location>(locations[3]);
-  const [travelMethod, setTravelMethod] = useState<"walking" | "driving" | "cycling">("walking");
+  const [selectedLocation, setSelectedLocation] = useState<Location>(locations[0]);
+  const [travelMethod, setTravelMethod] = useState<"walking" | "driving" | "cycling">("driving");
 
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -94,6 +94,9 @@ const Map = () => {
       },
       { enableHighAccuracy: true }
     );
+
+    setTravelMethod("driving");
+    setSelectedLocation(locations[0]);
 
     return () => navigator.geolocation.clearWatch(watchId);
   }, []);
