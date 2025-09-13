@@ -2,26 +2,74 @@ import { useState, useEffect, useRef } from "react";
 import mapboxgl, { Marker } from "mapbox-gl";
 import { toast } from "sonner";
 import "mapbox-gl/dist/mapbox-gl.css";
-
-// Make sure to set your Mapbox token in .env as VITE_MAPBOX_TOKEN
-mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN as string;
+import { createPopupHTML } from "../utils/Map.utils";
 
 interface Location {
-  name?: string;
+  id: string;
+  name: string;
+  address: string;
+  rating: number;
+  reviewCount: number;
+  priceRange: string;
+  cuisine: string[];
+  openHours: string;
+  verificationStatus: "verified" | "pending" | "rejected";
+  distance: string;
   lat: number;
   lng: number;
+  imageUrl?: string; // optional – for a thumbnail/photo
 }
 
+
 // Predefined campus locations
-const locations: Location[] = [
-  { name: "Burba Marwa", lat: 6.4731069928423395, lng: 3.2015184369190073 },
-  { name: "Senate Building", lat: 6.471211177998569, lng: 3.199952782857913 },
-  { name: "Love Garden", lat: 6.4694481147419935, lng: 3.2005249640922355 },
-  { name: "Science Complex", lat: 6.466362124948927, lng: 3.2003106126389302 },
+const locations = [
+  {
+    id: "1",
+    name: "Mama Sisi's Kitchen",
+    address: "15 Ogunlana Drive, Surulere, Lagos",
+    rating: 4.8,
+    reviewCount: 124,
+    priceRange: "₦₦",
+    cuisine: ["Traditional", "Amala & Ewedu", "Grilled Fish"],
+    openHours: "Open until 10 PM",
+    verificationStatus: "verified" as const,
+    distance: "0.8 km",
+    lat: 6.5007,  // Surulere area
+    lng: 3.3598,
+  },
+  {
+    id: "2",
+    name: "Buka Express",
+    address: "45 Allen Avenue, Ikeja, Lagos",
+    rating: 4.5,
+    reviewCount: 89,
+    priceRange: "₦",
+    cuisine: ["Fast Food", "Traditional", "Amala"],
+    openHours: "Open 24 hours",
+    verificationStatus: "verified" as const,
+    distance: "1.2 km",
+    lat: 6.6018,  // Ikeja area
+    lng: 3.3515,
+  },
+  {
+    id: "3",
+    name: "Yakoyo Restaurant",
+    address: "12 Admiralty Way, Lekki Phase 1, Lagos",
+    rating: 4.6,
+    reviewCount: 156,
+    priceRange: "₦₦₦",
+    cuisine: ["Premium", "Traditional", "Continental"],
+    openHours: "Closes at 9 PM",
+    verificationStatus: "pending" as const,
+    distance: "2.1 km",
+    lat: 6.4410,  // Lekki area
+    lng: 3.4855,
+  },
 ];
 
+
 const Map = () => {
-  const [userLocation, setUserLocation] = useState<Location | null>(null);
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<Location>(locations[3]);
   const [travelMethod, setTravelMethod] = useState<"walking" | "driving" | "cycling">("walking");
 
@@ -53,22 +101,35 @@ const Map = () => {
   // Initialize map after we have user location
   useEffect(() => {
     if (!userLocation || !mapContainer.current) return;
-
+    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN as string;
     const map = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v12",
       center: [userLocation.lng, userLocation.lat],
       zoom: 16,
     });
+
     mapRef.current = map;
     map.addControl(new mapboxgl.NavigationControl());
 
-    // Add campus location markers
-    locations.forEach((loc) => {
-      const marker = new mapboxgl.Marker().setLngLat([loc.lng, loc.lat]).addTo(map);
-      const popup = new mapboxgl.Popup({ offset: 25 }).setText(loc.name!);
-      marker.setPopup(popup);
-    });
+    locations.forEach((loc: Location) => {
+    const popup = new mapboxgl.Popup({
+      offset: 25,
+      closeButton: false,
+      closeOnClick: false,
+      closeOnMove: false,
+      className: 'w-96'
+    }).setHTML(createPopupHTML(loc));
+
+    const marker = new mapboxgl.Marker()
+      .setLngLat([loc.lng, loc.lat])
+      .addTo(map);
+
+    // Show popup on hover  
+    marker.getElement().addEventListener("mouseenter", () => popup.addTo(map).setLngLat([loc.lng, loc.lat]));
+    marker.getElement().addEventListener("mouseleave", () => popup.remove());
+  });
+
 
     // Add user marker
     const userMarker = new mapboxgl.Marker({ color: "#007cbf" })
@@ -114,7 +175,7 @@ const Map = () => {
   useEffect(() => {
     if (!userLocation || !selectedLocation || !mapRef.current) return;
 
-    const routeUrl = `https://api.mapbox.com/directions/v5/mapbox/${travelMethod}/${userLocation.lng},${userLocation.lat};${selectedLocation.lng},${selectedLocation.lat}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
+    const routeUrl = `https://api.mapbox.com/directions/v5/mapbox/${travelMethod}/${userLocation.lng},${userLocation.lat};${selectedLocation.lng},${selectedLocation.lat}?geometries=geojson&access_token=${import.meta.env.VITE_MAPBOX_TOKEN}`;
 
     fetch(routeUrl)
       .then((res) => res.json())
@@ -137,7 +198,7 @@ const Map = () => {
   }, [userLocation, selectedLocation, travelMethod]);
 
   return (
-    <div style={{ width: "100%", height: "600px" }}>
+    <div style={{ width: "64%", height: "700px", margin: 'auto' }}>
       <div ref={mapContainer} style={{ width: "100%", height: "100%" }} />
     </div>
   );
