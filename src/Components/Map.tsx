@@ -201,7 +201,7 @@ const Map = () => {
   }, [userLocation, selectedLocation, travelMethod]);
 
   return (
-    <div style={{ width: "64%", height: "700px", margin: 'auto' }}>
+    <div style={{ width: "63%", height: "700px", margin: 'auto' }}>
       <div ref={mapContainer} style={{ width: "100%", height: "100%" }} />
     </div>
   );

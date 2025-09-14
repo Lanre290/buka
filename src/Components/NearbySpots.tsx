@@ -2,7 +2,9 @@ import { BsClock, BsStarFill } from 'react-icons/bs';
 import logo from '../assets/logo.png';
 import { HiLocationMarker } from 'react-icons/hi';
 import { AddSpot } from './addSpot';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { SpotDuplicateChecker } from './duplicateSpot';
+import { toast } from 'sonner';
 
 const mockSpots = [
     {
@@ -46,19 +48,57 @@ const mockSpots = [
 
 const NearbySpots = () => {
     const  [addNewSpotUI, setAddNewSpotUI] = useState<boolean>(false);
+    const [checkingForNearbySpots, setCheckingForNearbySpots] = useState<boolean>(false);
+    const [userLocation, setUserLocation] = useState<{lat: number, lng: number}>({lat: 0, lng: 0});
+    const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
+    
+    const handleSelectExistingSpot = (spotId: string) => {
+      setSelectedSpotId(spotId);
+      setCheckingForNearbySpots(false);
+      alert(`You selected existing spot with ID: ${spotId}`);
+    }
+
+    const handleCancelDuplicateCheck = () => {
+        setCheckingForNearbySpots(false);
+        setSelectedSpotId(null);
+    }
+
+
+    useEffect(() => {
+      const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      (err) => {
+        console.error(err);
+        toast.error("Unable to get location. Using default.");
+        setUserLocation({ lat: 6.471211177998569, lng: 3.199952782857913 });
+      },
+      { enableHighAccuracy: true }
+    );
+
+      return () => {
+        setCheckingForNearbySpots(false);
+        navigator.geolocation.clearWatch(watchId)
+      }
+    }, [])
+
 
     return (
         <>
-            <div className="flex flex-col" style={{width: '33%'}}>
+            <div className="flex flex-col justify-center" style={{width: '32%'}}>
             <div className="flex flex-row justify-between items-center p-4">
-                <h3 className="text-black font-bold text-xl">Nearby spots</h3>
-                <button onClick={() => setAddNewSpotUI(true)} className="px-4 py-2 bg-[#BD6628] text-white rounded-md cursor-pointer hover:bg-[#BD6628]/90">Add a spot</button>
+                <h3 className="text-black font-bold text-xl -ml-4">Nearby spots</h3>
+                <button onClick={() => setCheckingForNearbySpots(true)} className="px-4 py-2 bg-[#BD6628] text-white rounded-md cursor-pointer hover:bg-[#BD6628]/90 mr-1">Add a spot</button>
             </div>
 
             <div className="flex flex-col gap-4 -pr-2">
                 {
                     mockSpots.map(spot => (
-                        <div key={spot.id} className="border border-gray-300 p-4 rounded-xl py-2 hover:bg-gray-100 transition-colors">
+                        <div key={spot.id} className="border border-gray-300 p-4 rounded-xl py-2 hover:bg-gray-100 transition-colors mr-4 ml-0">
                             <div className="flex flex-row gap-x-8 items-center">
                                 <img src={logo} alt={spot.name} className="w-20 h-20 object-cover rounded-lg" />
                                 <div className='flex flex-col gap-y-2'>
@@ -89,7 +129,14 @@ const NearbySpots = () => {
             </div>
         </div>
 
-
+                {checkingForNearbySpots && (
+          <SpotDuplicateChecker
+            userLocation={userLocation}
+            onConfirmNew={() => {setAddNewSpotUI(true); setCheckingForNearbySpots(false);}}
+            onSelectExisting={handleSelectExistingSpot}
+            onCancel={handleCancelDuplicateCheck}
+          />
+        )}
         {addNewSpotUI && <AddSpot onClose={() => setAddNewSpotUI(false)} />}
 
         </>

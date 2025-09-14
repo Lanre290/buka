@@ -2,15 +2,14 @@ import { useEffect, useState } from 'react';
 import Loading from '../Components/Loading';
 import { AnimatePresence } from 'framer-motion';
 import logo from '../assets/logo.png';
-import { HiLocationMarker } from 'react-icons/hi';
-import { BiMenu, BiSearch } from 'react-icons/bi';
+import { BiSearch } from 'react-icons/bi';
 import { BsFilter } from 'react-icons/bs';
 import Map from '../Components/Map';
 import NearbySpots from '../Components/NearbySpots';
+import { Mic, Mic2, Mic2Icon, MicVocal } from 'lucide-react';
 
 const Home = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [displayMode, setDisplayMode] = useState<'map' | 'list'>('map');
 
     useEffect(() => {
       const loadingTimer = setTimeout(() => {
@@ -37,18 +36,6 @@ const Home = () => {
                             <div className="text-md text-[#634741] -mt-2">Discover authentic and trusted amala spots around you</div>
                         </div>
                     </div>
-
-                    <div className="flex flex-row h-full items-end mr-6">
-                        <div className={`px-5 py-2 rounded-md flex flex-row gap-x-3 ${displayMode === 'map' ? 'bg-[#BD6628] hover:bg-[#BD6628]/95' : 'bg-[#f1f1f1] border-[#BD6628] border'} h-12 cursor-pointer items-center mr-4`} onClick={() => setDisplayMode('map')}>
-                            <HiLocationMarker className={`${displayMode === 'map' ? 'text-white' : 'text-[#DB5F34]'}`} />
-                            <h3 className={`${displayMode === 'map' ? 'text-white' : 'text-[#DB5F34]'}`}>Map</h3>
-                        </div>
-
-                        <div className={`px-5 py-2 rounded-md flex flex-row gap-x-3 ${displayMode === 'list' ? 'bg-[#BD6628] hover:bg-[#BD6628]/95' : 'bg-[#f1f1f1] border-[#BD6628] border'} h-12 cursor-pointer items-center mr-4`} onClick={() => setDisplayMode('list')}>
-                            <BiMenu className={`${displayMode === 'list' ? 'text-white' : 'text-[#DB5F34]'}`} />
-                            <h3 className={`${displayMode === 'list' ? 'text-white' : 'text-[#DB5F34]'}`}>List</h3>
-                        </div>
-                    </div>
                 </div>
 
                 <div className="flex flex-row justify-start items-start w-fit ml-8">
@@ -56,8 +43,8 @@ const Home = () => {
                         <BiSearch size={40} className=' text-xl text-[#DB5F34] cursor-pointer' />
                         <input type="text" name="search" id="search" placeholder="Search..." className="rounded-md p-2 w-full focus:outline-none" />
                     </form>
-                    <button title='Filter' className='ml-4 bg-[#f1f1f1] border border-[#BD6628] rounded-xl flex items-center justify-center p-2 cursor-pointer mr-4'>
-                        <BsFilter size={40} className='text-xl text-[#DB5F34]' />
+                    <button title='Filter' className='ml-4 border border-[#BD6628] rounded-xl flex items-center justify-center p-2 cursor-pointer mr-4'>
+                        <Mic size={40} className='text-xl text-[#DB5F34]' />
                     </button>
                 </div>
             </div>

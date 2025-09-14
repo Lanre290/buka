@@ -41,6 +41,7 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
     openTime: "",
     closeTime: "",
   });
+  const [progress, setProgress] = useState(0);
 
   const updateFormData = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -59,18 +60,18 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
 
   const nextStep = () => {
     if (currentStep < 4) setCurrentStep(currentStep + 1);
+    setProgress(((currentStep) / (steps.length - 1)) * 100);
   };
 
   const prevStep = () => {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
+    setProgress(((currentStep - 2) / (steps.length - 1)) * 100);
   };
 
   const handleSubmit = () => {
     toast.success("Amala spot submitted!");
     onClose();
   };
-
-  const progress = (currentStep / 4) * 100;
 
   return (
     <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -80,32 +81,32 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
           <div className="relative z-10">
             <div className="flex justify-between items-center mb-4">
               <div>
-                <h2 className="text-3xl font-bold mb-2">Add New Amala Spot</h2>
-                <p className="text-white/90">Share your favorite spot with the community</p>
+                <h2 className="text-3xl font-bold mb-2 text-[#DB5F34]">Add New Amala Spot</h2>
+                <p className="text-black/90">Share your favorite spot with the community</p>
               </div>
-              <button onClick={onClose} className="text-white hover:bg-white/10">
-                <X className="w-5 h-5" />
+              <button onClick={onClose} className="text-black hover:bg-white/10">
+                <X className="w-7 h-7 cursor-pointer" size={30}/>
               </button>
             </div>
             
             {/* progress */}
             <div className="space-y-3">
-              <progress value={progress} className="h-2 bg-white/20" />
+              <div style={{ width: `${progress}%`, minWidth: "40px" }} className="h-2 bg-[#DB5F34]/90 duration-300 rounded-xl" />
               <div className="flex justify-between">
                 {steps.map((step) => (
                   <div
                     key={step.id}
-                    className={`flex items-center space-x-2 ${
-                      currentStep >= step.id ? "text-white" : "text-white/50"
+                    className={`flex items-center space-x-2 cursor-pointer ${
+                      currentStep >= step.id ? "text-[#DB5F34]" : "text-white/50"
                     }`}
                   >
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${
-                      currentStep >= step.id ? "bg-white text-primary border-white" : "border-white/50"
+                      currentStep >= step.id ? "bg-white text-[#DB5F34] border-[#DB5F34]" : "border-white/50"
                     }`}>
                       {currentStep > step.id ? (
                         <Check className="w-4 h-4" />
                       ) : (
-                        <step.icon className="w-4 h-4" />
+                        <step.icon className={`w-4 h-4 text-[#DB5F34]`} />
                       )}
                     </div>
                     <span className="text-sm font-medium hidden sm:block">{step.title}</span>
@@ -123,7 +124,7 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 bg-gradient-warm rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MapPin className="w-8 h-8 text-white" />
+                  <MapPin className="w-8 h-8 text-[#DB5F34]" />
                 </div>
                 <h3 className="text-2xl font-bold text-foreground mb-2">Basic Information</h3>
                 <p className="text-muted-foreground">Let's start with the essentials</p>
@@ -178,7 +179,7 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 bg-gradient-warm rounded-full flex items-center justify-center mx-auto mb-4">
-                  <ChefHat className="w-8 h-8 text-white" />
+                  <ChefHat className="w-8 h-8 text-[#DB5F34]" size={45}/>
                 </div>
                 <h3 className="text-2xl font-bold text-foreground mb-2">Spot Details</h3>
                 <p className="text-muted-foreground">Tell us what makes this place special</p>
@@ -260,7 +261,7 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
                   </div>
                 </div>
 
-                <div className="space-y-2 fle flex-row justify-start item-start">
+                {/* <div className="space-y-2 fle flex-row justify-start item-start">
                   <label className="font-medium flex justify-start items-start">Description</label>
                   <textarea
                     placeholder="Describe the atmosphere, signature dishes, what makes this spot unique..."
@@ -269,7 +270,7 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
                     rows={4}
                     className="text-base bg-white/65 w-80 h-72 mb-3"
                   />
-                </div>
+                </div> */}
               </div>
             </div>
           )}
@@ -278,7 +279,7 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 bg-gradient-warm rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Camera className="w-8 h-8 text-white" />
+                  <Camera className="w-8 h-8 text-[#DB5F34]" />
                 </div>
                 <h3 className="text-2xl font-bold text-foreground mb-2">Add Photos</h3>
                 <p className="text-muted-foreground">Help others discover this amazing spot</p>
@@ -303,7 +304,7 @@ export const AddSpot = ({ onClose }: AddSpotWizardProps) => {
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 bg-gradient-warm rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Check className="w-8 h-8 text-white" />
+                  <Check className="w-8 h-8 text-[#DB5F34]" size={70} />
                 </div>
                 <h3 className="text-2xl font-bold text-foreground mb-2">Review & Submit</h3>
                 <p className="text-muted-foreground">Check your information before submitting</p>

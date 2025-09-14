@@ -9,6 +9,10 @@ g{
   margin: auto;
 }
 
+body{
+  overflow-x: hidden;
+}
+
 .buka-font {
   font-family: 'Nunito', sans-serif;
 }
